@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.google.common.collect.Lists;
+import com.practice.order.common.exception.BaseException;
 import com.practice.order.common.interceptor.CommonHttpRequestInterceptor;
 
-import dev.practice.order.common.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
