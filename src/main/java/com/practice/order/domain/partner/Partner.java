@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "partners")
 public class Partner extends AbstractEntity {
