@@ -17,6 +17,7 @@ import lombok.val;
 @RequestMapping("/api/v1/partners")
 public class PartnerApiController {
 	private final PartnerFacade partnerFacade;
+	private final PartnerDtoMapper partnerDtoMapper;
 
 	public CommonResponse registerPartner(final PartnerDto.RegisterRequest request) {
 		val command  = request.toCommand();

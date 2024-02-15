@@ -30,34 +30,33 @@ import lombok.extern.slf4j.Slf4j;
 @Table(name = "item_option_groups")
 public class ItemOptionGroup extends AbstractEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne
-	// 연결 테이블 없이 생성 되게끔 도와줌
-	@JoinColumn(name = "item_id")
-	private Item item;
-	private Integer ordering;
-	private String itemOptionGroupName;
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+    private Integer ordering;
+    private String itemOptionGroupName;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "itemOptionGroup", cascade = CascadeType.PERSIST)
-	private List<ItemOption> itemOptionList = Lists.newArrayList();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "itemOptionGroup", cascade = CascadeType.PERSIST)
+    private List<ItemOption> itemOptionList = Lists.newArrayList();
 
-	@Builder
-	public ItemOptionGroup(Item item, Integer ordering, String itemOptionGroupName) {
-		if (item == null) throw new InvalidParamException("ItemOptionGroup.item");
-		if (ordering == null) throw new InvalidParamException("ItemOptionGroup.ordering");
-		if (StringUtils.isBlank(itemOptionGroupName))
-			throw new InvalidParamException("ItemOptionGroup.itemOptionGroupName");
+    @Builder
+    public ItemOptionGroup(Item item, Integer ordering, String itemOptionGroupName) {
+        if (item == null) throw new InvalidParamException("ItemOptionGroup.item");
+        if (ordering == null) throw new InvalidParamException("ItemOptionGroup.ordering");
+        if (StringUtils.isBlank(itemOptionGroupName))
+            throw new InvalidParamException("ItemOptionGroup.itemOptionGroupName");
 
-		this.item = item;
-		this.ordering = ordering;
-		this.itemOptionGroupName = itemOptionGroupName;
-	}
+        this.item = item;
+        this.ordering = ordering;
+        this.itemOptionGroupName = itemOptionGroupName;
+    }
 
-	public ItemOptionGroup addItemOption(ItemOption itemOption) {
-		this.itemOptionList.add(itemOption);
-		return this;
-	}
+    public ItemOptionGroup addItemOption(ItemOption itemOption) {
+        this.itemOptionList.add(itemOption);
+        return this;
+    }
 }

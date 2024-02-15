@@ -24,32 +24,32 @@ import lombok.extern.slf4j.Slf4j;
 @Table(name = "item_options")
 public class ItemOption extends AbstractEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "item_option_group_id")
-	private ItemOptionGroup itemOptionGroup;
-	private Integer ordering;
-	private String itemOptionName;
-	private Long itemOptionPrice;
+    @ManyToOne
+    @JoinColumn(name = "item_option_group_id")
+    private ItemOptionGroup itemOptionGroup;
+    private Integer ordering;
+    private String itemOptionName;
+    private Long itemOptionPrice;
 
-	@Builder
-	public ItemOption(
-		ItemOptionGroup itemOptionGroup,
-		Integer ordering,
-		String itemOptionName,
-		Long itemOptionPrice
-	) {
-		if (itemOptionGroup == null) throw new InvalidParamException("ItemOption.itemOptionGroup");
-		if (ordering == null) throw new InvalidParamException("ItemOption.ordering");
-		if (StringUtils.isBlank(itemOptionName)) throw new InvalidParamException("ItemOption.itemOptionName");
-		if (itemOptionPrice == null) throw new InvalidParamException("ItemOption.itemOptionPrice");
+    @Builder
+    public ItemOption(
+            ItemOptionGroup itemOptionGroup,
+            Integer ordering,
+            String itemOptionName,
+            Long itemOptionPrice
+    ) {
+        if (itemOptionGroup == null) throw new InvalidParamException("ItemOption.itemOptionGroup");
+        if (ordering == null) throw new InvalidParamException("ItemOption.ordering");
+        if (StringUtils.isBlank(itemOptionName)) throw new InvalidParamException("ItemOption.itemOptionName");
+        if (itemOptionPrice == null) throw new InvalidParamException("ItemOption.itemOptionPrice");
 
-		this.itemOptionGroup = itemOptionGroup;
-		this.ordering = ordering;
-		this.itemOptionName = itemOptionName;
-		this.itemOptionPrice = itemOptionPrice;
-	}
+        this.itemOptionGroup = itemOptionGroup;
+        this.ordering = ordering;
+        this.itemOptionName = itemOptionName;
+        this.itemOptionPrice = itemOptionPrice;
+    }
 }

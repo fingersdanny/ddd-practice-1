@@ -2,11 +2,13 @@ package com.practice.order.domain.item;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.collect.Lists;
 import com.practice.order.common.exception.InvalidParamException;
 import com.practice.order.common.util.TokenGenerator;
+import com.practice.order.domain.AbstractEntity;
 
-import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -22,64 +24,59 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @Entity
 @NoArgsConstructor
 @Table(name = "items")
-public class Item {
-	private static final String PREFIX_ITEM = "itm_";
+public class Item extends AbstractEntity {
+    private static final String ITEM_PREFIX = "itm_";
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String itemToken;
+    private Long partnerId;
+    private String itemName;
+    private Long itemPrice;
 
-	private String itemToken;
-	private Long partnerId;
-	private String itemName;
-	private Long itemPrice;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "item", cascade = CascadeType.PERSIST)
+    private List<ItemOptionGroup> itemOptionGroupList = Lists.newArrayList();
 
-	// Item : ItemOptionGroup = 1 : N
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "item", cascade = CascadeType.PERSIST)
-	private List<ItemOptionGroup> itemOptionGroupList = Lists.newArrayList();
+    @Getter
+    @RequiredArgsConstructor
+    public enum Status {
+        PREPARE("판매준비중"),
+        ON_SALE("판매중"),
+        END_OF_SALE("판매종료");
 
-	@Enumerated(EnumType.STRING)
-	private Status status;
+        private final String description;
+    }
 
-	@Builder
-	public Item(Long partnerId, String itemName, Long itemPrice) {
-		if (partnerId == null)
-			throw new InvalidParamException();
-		if (StringUtils.isEmpty(itemName))
-			throw new InvalidParamException();
-		if (itemPrice == null)
-			throw new InvalidParamException();
+    @Builder
+    public Item(Long partnerId, String itemName, Long itemPrice) {
+        if (partnerId == null) throw new InvalidParamException("Item.partnerId");
+        if (StringUtils.isBlank(itemName)) throw new InvalidParamException("Item.itemName");
+        if (itemPrice == null) throw new InvalidParamException("Item.itemPrice");
 
-		this.itemToken = TokenGenerator.randomCharacterWithPrefix(PREFIX_ITEM);
-		this.partnerId = partnerId;
-		this.itemName = itemName;
-		this.itemPrice = itemPrice;
-		this.status = Status.PREPARE;
-	}
+        this.partnerId = partnerId;
+        this.itemToken = TokenGenerator.randomCharacterWithPrefix(ITEM_PREFIX);
+        this.itemName = itemName;
+        this.itemPrice = itemPrice;
+        this.status = Status.PREPARE;
+    }
 
-	public void changePrepare() {
-		this.status = Status.PREPARE;
-	}
+    public void changeOnSale() {
+        this.status = Status.ON_SALE;
+    }
 
-	public void changeOnSales() {
-		this.status = Status.ON_SALES;
-	}
+    public void changeEndOfSale() {
+        this.status = Status.END_OF_SALE;
+    }
 
-	public void endOfSales() {
-		this.status = Status.END_OF_SALES;
-	}
-
-	@Getter
-	@RequiredArgsConstructor
-	public enum Status {
-		PREPARE("판매준비중"),
-		ON_SALES("판매중"),
-		END_OF_SALES("판매종료");
-
-		private final String description;
-	}
+    public boolean availableSales() {
+        return this.status == Status.ON_SALE;
+    }
 }
